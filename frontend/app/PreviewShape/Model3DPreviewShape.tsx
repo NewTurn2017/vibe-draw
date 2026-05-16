@@ -5,7 +5,6 @@ import {
   BaseBoxShapeUtil,
   DefaultSpinner,
   HTMLContainer,
-  Icon,
   SvgExportContext,
   TLBaseShape,
   TLShape,
@@ -13,6 +12,16 @@ import {
   useIsEditing,
   useToasts,
 } from '@tldraw/tldraw'
+
+const ICON_GLYPH: Record<string, string> = { duplicate: '⧉', redo: '↻', plus: '＋' }
+const Icon = ({ icon, ...rest }: { icon: string; [k: string]: any }) => (
+  <span
+    {...rest}
+    className="cursor-pointer select-none text-lg leading-none"
+  >
+    {ICON_GLYPH[icon] ?? '•'}
+  </span>
+)
 import { useState, useEffect } from 'react'
 
 export type Model3DPreviewShape = TLBaseShape<
@@ -430,33 +439,20 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
               width={toDomPrecision(shape.props.w)}
               height={toDomPrecision(shape.props.h)}
               draggable={false}
+              className="border bg-black/10"
               style={{
                 pointerEvents: isEditing ? 'auto' : 'none',
-                border: '1px solid var(--color-panel-contrast)',
+                borderColor: 'var(--color-panel-contrast)',
                 borderRadius: 'var(--radius-2)',
-                backgroundColor: 'rgba(0,0,0,0.1)',
               }}
             />
             {(isRegenerating || isEditingModel) && (
-              <div 
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'rgba(0,0,0,0.7)',
-                  color: 'white',
-                  borderRadius: 'var(--radius-2)',
-                  zIndex: 100,
-                }}
+              <div
+                className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-black/70 text-white"
+                style={{ borderRadius: 'var(--radius-2)' }}
               >
                 <DefaultSpinner />
-                <div style={{ marginTop: 10, fontSize: 14 }}>
+                <div className="mt-[10px] text-sm">
                   {isRegenerating ? 'Regenerating 3D model...' : 'Editing 3D model...'}
                 </div>
               </div>
@@ -464,35 +460,23 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
           </>
         ) : (
           <div
+            className="flex h-full w-full items-center justify-center border"
             style={{
-              width: '100%',
-              height: '100%',
               backgroundColor: 'var(--color-muted-2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '1px solid var(--color-muted-1)',
+              borderColor: 'var(--color-muted-1)',
             }}
           >
             <DefaultSpinner />
           </div>
         )}
         <div
+          className="absolute flex cursor-pointer flex-col justify-center gap-[5px] pl-[5px] pt-[5px]"
           style={{
-            position: 'absolute',
             top: 15,
             right: -40,
             height: 40,
             width: 40,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'left',
-            justifyContent: 'center',
-            cursor: 'pointer',
             pointerEvents: 'all',
-            paddingLeft: 5,
-            paddingTop: 5,
-            gap: 5
           }}
         >
           <Icon
@@ -662,27 +646,16 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
         </div>
         {htmlToUse && (
           <div
+            className="pointer-events-none absolute left-0 flex w-full items-center justify-center p-1 text-center text-xs font-[inherit]"
             style={{
-              textAlign: 'center',
-              position: 'absolute',
               bottom: isEditing ? -40 : 0,
-              padding: 4,
-              fontFamily: 'inherit',
-              fontSize: 12,
-              left: 0,
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              pointerEvents: 'none',
             }}
           >
             <span
+              className="rounded-full border px-3 py-1"
               style={{
                 background: 'var(--color-panel)',
-                padding: '4px 12px',
-                borderRadius: 99,
-                border: '1px solid var(--color-muted-1)',
+                borderColor: 'var(--color-muted-1)',
               }}
             >
               {isEditing ? 'Click the canvas to exit' : 'Double click to interact with 3D model'}
