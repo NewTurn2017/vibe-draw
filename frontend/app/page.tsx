@@ -37,7 +37,7 @@ export default function App() {
             components={{
               SharePanel: () => (
                 <TooltipProvider delayDuration={300}>
-                  <div className="flex items-center gap-2 p-3">
+                  <div className="pointer-events-auto flex items-center gap-2 p-3">
                     <ImproveDrawingButton />
                     <AutoDrawButton />
                     <Vibe3DCodeButton />
