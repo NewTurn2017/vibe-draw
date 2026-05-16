@@ -71,6 +71,12 @@ class TrellisInput(BaseModel):
     slat_sampling_steps: Optional[int] = Field(50, ge=10, le=50)
     ss_guidance_strength: Optional[float] = Field(7.5, gt=0, le=10)
     slat_guidance_strength: Optional[float] = Field(3, gt=0, le=10)
+    # TRELLIS.2 quality knobs. The model maxes out at 1536/4096, but those
+    # GLBs (~40-80MB) overflow RunPod's ~16MB response payload limit, so we
+    # cap at 1024/2048 here. Bump only after switching to a worker that
+    # uploads to R2/S3 directly instead of returning base64.
+    resolution: Optional[int] = Field(512, ge=512, le=1024)
+    texture_size: Optional[int] = Field(1024, ge=512, le=2048)
 
 class TrellisRequest(BaseModel):
     model: str = "Qubico/trellis"
