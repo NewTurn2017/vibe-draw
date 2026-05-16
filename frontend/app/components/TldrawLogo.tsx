@@ -4,7 +4,7 @@ export function TldrawLogo() {
 	const breakpoint = useBreakpoint()
 	return (
 		<a
-			className={`tldrawLogo ${breakpoint < 5 ? 'tldrawLogo__mobile' : ''}`}
+			className={`absolute z-[9999999] right-0 ${breakpoint < 5 ? 'bottom-[60px]' : 'bottom-0'}`}
 			href="https://www.tldraw.dev"
 		>
 			<svg
@@ -12,7 +12,7 @@ export function TldrawLogo() {
 				height="40"
 				viewBox="0 0 71 18"
 				fill="none"
-				style={{ padding: 8 }}
+				className="p-2"
 			>
 				<path
 					fillRule="evenodd"
