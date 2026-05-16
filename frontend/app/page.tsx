@@ -1,6 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import { useEffect } from 'react'
 import './tldraw.css'
 import { Vibe3DCodeButton } from './components/Vibe3DCodeButton'
 import { AutoDrawButton } from './components/AutoDrawButton'
@@ -20,6 +21,24 @@ const shapeUtils = [PreviewShapeUtil, Model3DPreviewShapeUtil]
 
 export default function App() {
   const { activeTab, setActiveTab } = useTabStore()
+
+  // Force tldraw's built-in UI (toolbar, menus, style panel) to Korean.
+  // tldraw 2.4 supports locale="ko-kr" via user preferences (persisted to
+  // localStorage), so this only needs to run once per browser.
+  useEffect(() => {
+    let cancelled = false
+    void (async () => {
+      const { getUserPreferences, setUserPreferences } = await import('@tldraw/tldraw')
+      if (cancelled) return
+      const current = getUserPreferences()
+      if (current.locale !== 'ko-kr') {
+        setUserPreferences({ ...current, locale: 'ko-kr' })
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   return (
     <>

@@ -1,6 +1,7 @@
-import { Editor, getSvgAsImage } from '@tldraw/tldraw'
+import { Editor } from '@tldraw/tldraw'
 import { getSelectionAsText } from './getSelectionAsText'
 import { blobToBase64 } from './blobToBase64'
+import { svgElementToPngBlob } from './svgToPng'
 import { Model3DPreviewShape } from '../PreviewShape/Model3DPreviewShape'
 
 export async function edit3DCode(
@@ -15,32 +16,32 @@ export async function edit3DCode(
     const selectedShapes = editor.getSelectedShapes()
     
     if (selectedShapes.length === 0) {
-      throw Error('First select shapes for editing.')
+      throw Error('먼저 편집할 도형을 선택하세요.')
     }
 
     // Filter the 3D model shapes and other shapes
     const model3dShapes = selectedShapes.filter((shape) => shape.type === 'model3d')
     const nonModel3dShapes = selectedShapes.filter((shape) => shape.type !== 'model3d')
-    
+
     // Validation checks
     if (model3dShapes.length === 0) {
-      throw Error('First select a 3D model to edit.')
+      throw Error('먼저 편집할 3D 모델을 선택하세요.')
     }
-    
+
     if (model3dShapes.length > 1) {
-      throw Error('Select only one 3D model at a time.')
+      throw Error('한 번에 하나의 3D 모델만 편집할 수 있어요.')
     }
-    
+
     if (nonModel3dShapes.length === 0) {
-      throw Error('Select at least one drawing or shape to guide the editing.')
+      throw Error('편집 가이드용 그림이나 도형을 하나 이상 선택하세요.')
     }
-    
+
     // Get the model3D shape and its Three.js code
     const model3dShape = model3dShapes[0] as Model3DPreviewShape
     const threeJsCode = model3dShape.props.threeJsCode
-    
+
     if (!threeJsCode || threeJsCode.length < 10) {
-      throw Error('The selected 3D model does not contain valid code.')
+      throw Error('선택한 3D 모델에 편집 가능한 코드가 없어요.')
     }
 
     // Get an SVG based on the non-model3d shapes
@@ -50,21 +51,11 @@ export async function edit3DCode(
     })
 
     if (!svg) {
-      throw Error('Could not generate SVG from selected shapes.')
+      throw Error('선택한 도형에서 SVG를 만들 수 없었어요.')
     }
 
     // Turn the SVG into a DataUrl
-    const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-    const blob = await getSvgAsImage(svg, IS_SAFARI, {
-      type: 'png',
-      quality: 0.8,
-      scale: 1,
-    })
-    
-    if (!blob) {
-      throw Error('Could not generate image from SVG.')
-    }
-    
+    const blob = await svgElementToPngBlob(svg, 1)
     const dataUrl = await blobToBase64(blob)
 
     // Get any text from the selection
@@ -85,7 +76,7 @@ export async function edit3DCode(
 
     if (!response.ok) {
       const errorData = await response.json()
-      throw Error(`API error: ${errorData.detail || response.statusText}`)
+      throw Error(`API 오류: ${errorData.detail || response.statusText}`)
     }
 
     // Get the response with task ID
@@ -101,7 +92,7 @@ export async function edit3DCode(
       // Make sure we have code
       if (editedThreeJsCode.length < 100) {
         console.warn(editedCodeData.content)
-        throw Error('Could not generate edited 3D model code.')
+        throw Error('편집된 3D 모델 코드를 만들 수 없었어요.')
       }
 
       // Update the shape with the edited code
@@ -116,7 +107,7 @@ export async function edit3DCode(
       console.log(`3D model successfully edited`)
       return model3dShape.id
     } else {
-      throw Error('No code was generated from the edit')
+      throw Error('편집 결과로 코드가 생성되지 않았어요.')
     }
   } catch (e) {
     console.error('Error in edit3DCode:', e)

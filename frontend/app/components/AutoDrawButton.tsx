@@ -27,8 +27,8 @@ export function AutoDrawButton() {
 
     // Add initial toast notification
     addToast({
-      title: 'Auto 3D Enabled',
-      description: 'Draw something and pause for 3 seconds to generate a 3D model',
+      title: '자동 3D 켜짐',
+      description: '뭔가 그린 다음 3초 멈추면 자동으로 3D 모델이 생성돼요',
       icon: 'check',
     })
 
@@ -49,8 +49,8 @@ export function AutoDrawButton() {
         // Show a toast while generating
         addToast({
           id: 'generating-3d',
-          title: 'Generating 3D Model',
-          description: 'Creating a 3D model from your drawing...',
+          title: '3D 모델 생성 중',
+          description: '그림에서 3D 모델을 만드는 중이에요…',
           icon: 'external-link',
         })
 
@@ -61,15 +61,15 @@ export function AutoDrawButton() {
           console.error(e)
           addToast({
             icon: 'cross-2',
-            title: 'Something went wrong',
+            title: '문제가 발생했어요',
             description: (e as Error).message.slice(0, 100),
           })
         }
 
         // Success toast
         addToast({
-          title: 'Success!',
-          description: '3D model created',
+          title: '완성!',
+          description: '3D 모델이 생성됐어요',
           icon: 'check',
         })
 
@@ -80,8 +80,8 @@ export function AutoDrawButton() {
 
         // Error toast
         addToast({
-          title: 'Error',
-          description: error.message || 'Failed to generate 3D model',
+          title: '오류',
+          description: error.message || '3D 모델 생성에 실패했어요',
           icon: 'cross-2',
         })
       }
@@ -213,8 +213,8 @@ export function AutoDrawButton() {
       }
 
       addToast({
-        title: 'Auto 3D Disabled',
-        description: 'Automatic 3D model generation turned off',
+        title: '자동 3D 꺼짐',
+        description: '자동 3D 모델 생성이 꺼졌어요',
         icon: 'cross-2',
       })
     }
@@ -227,17 +227,17 @@ export function AutoDrawButton() {
           variant={enabled ? 'default' : 'outline'}
           size="default"
           onClick={handleClick}
-          aria-label="Auto draw"
+          aria-label="자동 3D 생성"
         >
           {enabled ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
             <Wand2 className="h-4 w-4 text-accent" />
           )}
-          Auto 3D {enabled ? '(ON)' : '(OFF)'}
+          자동 3D {enabled ? '(켜짐)' : '(꺼짐)'}
         </Button>
       </TooltipTrigger>
-      <TooltipContent>Auto-generate a 3D model after a pause in drawing</TooltipContent>
+      <TooltipContent>그림을 멈추면 자동으로 3D 모델 생성</TooltipContent>
     </Tooltip>
   )
 }

@@ -17,11 +17,11 @@ export function TabGroup({ activeTab, setActiveTab }: TabGroupProps) {
         <TabsList>
           <TabsTrigger value="tldraw">
             <Square className="h-3.5 w-3.5" />
-            2D Canvas
+            2D 캔버스
           </TabsTrigger>
           <TabsTrigger value="threejs">
             <Box className="h-3.5 w-3.5" />
-            3D World
+            3D 월드
           </TabsTrigger>
         </TabsList>
       </Tabs>

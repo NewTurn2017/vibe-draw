@@ -2,12 +2,12 @@
 
 import { useEditor, useToasts } from '@tldraw/tldraw'
 import { useCallback, useEffect, useState } from 'react'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Toggle } from '@/components/ui/toggle'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { CubeIcon, BrainIcon } from './icons'
-import { vibe3DCode } from '../lib/vibe3DCode'
+import { vibe3DCode, type TrellisQuality } from '../lib/vibe3DCode'
 import { edit3DCode } from '../lib/edit3DCode'
 import type { Model3DPreviewShape } from '../PreviewShape/Model3DPreviewShape'
 
@@ -17,6 +17,7 @@ export function Vibe3DCodeButton() {
   const [is3DModelSelected, setIs3DModelSelected] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [thinkingEnabled, setThinkingEnabled] = useState(true)
+  const [highQuality, setHighQuality] = useState(false)
 
   // Update state whenever selection changes
   useEffect(() => {
@@ -67,27 +68,28 @@ export function Vibe3DCodeButton() {
         })
       } else {
         // Otherwise, use vibe3DCode to create a new 3D model
-        await vibe3DCode(editor, undefined, thinkingEnabled)
+        const quality: TrellisQuality = highQuality ? 'high' : 'fast'
+        await vibe3DCode(editor, undefined, thinkingEnabled, quality)
       }
     } catch (e) {
       console.error(e)
       addToast({
         icon: 'cross-2',
-        title: 'Something went wrong',
+        title: '문제가 발생했어요',
         description: (e as Error).message.slice(0, 100),
       })
     } finally {
       setIsProcessing(false)
     }
-  }, [editor, addToast, is3DModelSelected, isProcessing, thinkingEnabled])
+  }, [editor, addToast, is3DModelSelected, isProcessing, thinkingEnabled, highQuality])
 
   const label = isProcessing
     ? is3DModelSelected
-      ? 'Editing...'
-      : 'Creating...'
+      ? '편집 중…'
+      : '만드는 중…'
     : is3DModelSelected
-      ? 'Edit 3D'
-      : 'Make 3D'
+      ? '3D 편집'
+      : '3D 만들기'
 
   return (
     <Tooltip>
@@ -111,25 +113,54 @@ export function Vibe3DCodeButton() {
             {label}
           </Button>
           {!is3DModelSelected && !isProcessing && (
-            <Toggle
-              variant="outline"
-              size="sm"
-              pressed={thinkingEnabled}
-              onPressedChange={setThinkingEnabled}
-              aria-label="Toggle thinking mode (TRELLIS image-to-3D)"
-              className="h-9 w-9 px-0"
-            >
-              <BrainIcon gradient={thinkingEnabled} className="h-4 w-4" />
-            </Toggle>
+            <>
+              <Toggle
+                variant="outline"
+                size="sm"
+                pressed={thinkingEnabled}
+                onPressedChange={setThinkingEnabled}
+                aria-label="고품질 모드 전환 (TRELLIS 이미지-3D)"
+                className="h-9 w-9 px-0"
+              >
+                <BrainIcon gradient={thinkingEnabled} className="h-4 w-4" />
+              </Toggle>
+              {thinkingEnabled && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Toggle
+                      variant="outline"
+                      size="sm"
+                      pressed={highQuality}
+                      onPressedChange={setHighQuality}
+                      aria-label="고화질 전환 (1024 vs 512)"
+                      className="h-9 w-9 px-0"
+                    >
+                      <Sparkles
+                        className={
+                          highQuality
+                            ? 'h-4 w-4 text-accent'
+                            : 'h-4 w-4 text-muted-foreground'
+                        }
+                      />
+                    </Toggle>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {highQuality
+                      ? '고화질 (1024³, 느림)'
+                      : '빠른 화질 (512³, 권장)'}
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </>
           )}
         </div>
       </TooltipTrigger>
       <TooltipContent>
         {is3DModelSelected
-          ? 'Edit the selected 3D model'
+          ? '선택한 3D 모델 편집'
           : thinkingEnabled
-            ? 'Generate a 3D mesh from your sketch (TRELLIS)'
-            : 'Generate Three.js code from your sketch (Gemini)'}
+            ? `스케치에서 3D 메시 생성 (TRELLIS · ${highQuality ? '고화질' : '빠름'})`
+            : '스케치에서 Three.js 코드 생성 (Gemini)'}
       </TooltipContent>
     </Tooltip>
   )

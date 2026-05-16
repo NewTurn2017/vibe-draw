@@ -20,8 +20,8 @@ export function ImproveDrawingButton() {
       if (selectedShapes.length === 0) {
         addToast({
           icon: 'cross-2',
-          title: 'Select something first',
-          description: 'Please select a shape to improve',
+          title: '먼저 선택해 주세요',
+          description: '다듬을 도형을 캔버스에서 선택하세요',
         })
         return
       }
@@ -32,8 +32,8 @@ export function ImproveDrawingButton() {
       if (drawableShapes.length === 0) {
         addToast({
           icon: 'cross-2',
-          title: 'No drawable shapes',
-          description: 'Select shapes that can be improved (not 3D models)',
+          title: '다듬을 수 있는 도형이 없어요',
+          description: '3D 모델 말고 다듬을 수 있는 도형을 선택해 주세요',
         })
         return
       }
@@ -46,7 +46,7 @@ export function ImproveDrawingButton() {
       console.error('Error in improve drawing workflow:', e)
       addToast({
         icon: 'cross-2',
-        title: 'Something went wrong',
+        title: '문제가 발생했어요',
         description: (e as Error).message.slice(0, 100),
       })
     } finally {
@@ -62,17 +62,17 @@ export function ImproveDrawingButton() {
           size="default"
           onClick={handleClick}
           disabled={isProcessing}
-          aria-label="Improve drawing"
+          aria-label="스케치 다듬기"
         >
           {isProcessing ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
             <Sparkles className="h-4 w-4 text-accent" />
           )}
-          {isProcessing ? 'Improving…' : 'Improve'}
+          {isProcessing ? '다듬는 중…' : '다듬기'}
         </Button>
       </TooltipTrigger>
-      <TooltipContent>Refine selection into a clean illustration</TooltipContent>
+      <TooltipContent>선택한 스케치를 깔끔한 일러스트로 정리</TooltipContent>
     </Tooltip>
   )
 }

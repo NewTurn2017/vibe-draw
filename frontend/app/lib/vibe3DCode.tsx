@@ -1,14 +1,27 @@
-import { Editor, createShapeId, getSvgAsImage, TLShapeId } from '@tldraw/tldraw'
+import { Editor, createShapeId, TLShapeId } from '@tldraw/tldraw'
 import { getSelectionAsText } from './getSelectionAsText'
 import { blobToBase64 } from './blobToBase64'
+import { svgElementToPngBlob } from './svgToPng'
 import { Model3DPreviewShape } from '../PreviewShape/Model3DPreviewShape'
 import { useObjectStore } from '../store/appStore'
 
-export async function vibe3DCode(editor: Editor, shapeId: TLShapeId | null = null, thinkingMode: boolean = false) {
+export type TrellisQuality = 'fast' | 'high'
+
+const QUALITY_SETTINGS: Record<TrellisQuality, { resolution: number; texture_size: number }> = {
+  fast: { resolution: 512, texture_size: 1024 },
+  high: { resolution: 1024, texture_size: 2048 },
+}
+
+export async function vibe3DCode(
+  editor: Editor,
+  shapeId: TLShapeId | null = null,
+  thinkingMode: boolean = false,
+  quality: TrellisQuality = 'fast'
+) {
   // Get the selected shapes (we need at least one)
   const selectedShapes = editor.getSelectedShapes()
 
-  if (selectedShapes.length === 0) throw Error('First select something to make real.')
+  if (selectedShapes.length === 0) throw Error('먼저 3D로 만들 도형을 선택하세요.')
 
   // Create the preview shape for the 3D model
   if (!shapeId) {
@@ -40,13 +53,8 @@ export async function vibe3DCode(editor: Editor, shapeId: TLShapeId | null = nul
   }
 
   // Turn the SVG into a DataUrl
-  const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-  const blob = await getSvgAsImage(svg, IS_SAFARI, {
-    type: 'png',
-    quality: 0.8,
-    scale: 1,
-  })
-  const dataUrl = await blobToBase64(blob!)
+  const blob = await svgElementToPngBlob(svg, 1)
+  const dataUrl = await blobToBase64(blob)
 
   // Get the text from the selection
   const selectionText = getSelectionAsText(editor)
@@ -64,17 +72,20 @@ export async function vibe3DCode(editor: Editor, shapeId: TLShapeId | null = nul
           input: {
             image: dataUrl,
             seed: 0,
-            ss_sampling_steps: 50,
-            slat_sampling_steps: 50,
+            // 20 steps = TRELLIS.2 recommended default; ~2x faster than 50
+            // with negligible quality loss for sketches.
+            ss_sampling_steps: 20,
+            slat_sampling_steps: 20,
             ss_guidance_strength: 7.5,
             slat_guidance_strength: 3,
+            ...QUALITY_SETTINGS[quality],
           },
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw Error(`API error: ${errorData.detail || response.statusText}`)
+        throw Error(`API 오류: ${errorData.detail || response.statusText}`)
       }
 
       const jsonResponse = await response.json()
@@ -130,7 +141,7 @@ export async function vibe3DCode(editor: Editor, shapeId: TLShapeId | null = nul
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw Error(`API error: ${errorData.detail || response.statusText}`)
+        throw Error(`API 오류: ${errorData.detail || response.statusText}`)
       }
 
       // Get the response with task ID
@@ -142,11 +153,11 @@ export async function vibe3DCode(editor: Editor, shapeId: TLShapeId | null = nul
       if (generatedCodeData && generatedCodeData.content) {
         // Extract the Three.js code from the response
         const threeJsCode = processThreeJsCode(generatedCodeData.content);
-        
+
         // Make sure we have code
         if (threeJsCode.length < 100) {
           console.warn(generatedCodeData.content)
-          throw Error('Could not generate a 3D model from those wireframes.')
+          throw Error('이 스케치로는 3D 모델을 만들 수 없었어요.')
         }
 
         // Update the shape with the new props
@@ -161,7 +172,7 @@ export async function vibe3DCode(editor: Editor, shapeId: TLShapeId | null = nul
 
         console.log(`Response received from backend`)
       } else {
-        throw Error('No code was generated')
+        throw Error('코드가 생성되지 않았어요.')
       }
     }
   } catch (e) {
@@ -289,14 +300,16 @@ async function waitForTaskResult(taskId: string): Promise<string> {
       console.log('WebSocket connection closed');
     };
     
-    // Set a timeout in case the WebSocket connection doesn't close properly
+    // Set a timeout in case the WebSocket connection doesn't close properly.
+    // First-call cold start (TRELLIS.2 model download into RunPod cache) can
+    // take ~5min; warm calls are <30s.
     setTimeout(() => {
       if (eventSource.readyState !== WebSocket.CLOSED) {
         console.warn('Task timed out, closing WebSocket connection');
         eventSource.close();
         reject(new Error('Task timed out'));
       }
-    }, 120000); // 2 minute timeout
+    }, 600000); // 10 minute timeout (covers first-time model download)
   });
 }
 

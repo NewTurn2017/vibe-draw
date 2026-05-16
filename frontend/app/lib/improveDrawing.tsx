@@ -1,16 +1,17 @@
-import { Editor, createShapeId, getSvgAsImage, TLImageShape, AssetRecordType } from '@tldraw/tldraw'
+import { Editor, createShapeId, TLImageShape, AssetRecordType } from '@tldraw/tldraw'
 import { getSelectionAsText } from './getSelectionAsText'
 import { blobToBase64 } from './blobToBase64'
+import { svgElementToPngBlob } from './svgToPng'
 
 export async function improveDrawing(editor: Editor) {
   // Get the selected shapes (we need at least one)
   const selectedShapes = editor.getSelectedShapes()
-  if (selectedShapes.length === 0) throw Error('First select something to improve.')
+  if (selectedShapes.length === 0) throw Error('먼저 다듬을 도형을 선택하세요.')
 
   // Filter out non-drawable shapes if needed
   const drawableShapes = selectedShapes.filter((shape) => shape.type !== 'model3d')
-  
-  if (drawableShapes.length === 0) throw Error('No drawable shapes selected.')
+
+  if (drawableShapes.length === 0) throw Error('다듬을 수 있는 도형이 없어요.')
 
   // Get an SVG based on the selected shapes
   const svg = await editor.getSvg(drawableShapes, {
@@ -19,21 +20,11 @@ export async function improveDrawing(editor: Editor) {
   })
 
   if (!svg) {
-    throw Error('Could not generate SVG from selection.')
+    throw Error('선택한 도형에서 SVG를 만들 수 없었어요.')
   }
 
   // Turn the SVG into a DataUrl
-  const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-  const blob = await getSvgAsImage(svg, IS_SAFARI, {
-    type: 'png',
-    quality: 0.8,
-    scale: 1,
-  })
-  
-  if (!blob) {
-    throw Error('Could not generate image from SVG.')
-  }
-  
+  const blob = await svgElementToPngBlob(svg, 1)
   const dataUrl = await blobToBase64(blob)
 
   // Get any text from the selection
@@ -54,7 +45,7 @@ export async function improveDrawing(editor: Editor) {
 
     if (!response.ok) {
       const errorData = await response.json()
-      throw Error(`API error: ${errorData.detail || response.statusText}`)
+      throw Error(`API 오류: ${errorData.detail || response.statusText}`)
     }
 
     // Get the response with task ID
@@ -69,7 +60,7 @@ export async function improveDrawing(editor: Editor) {
       const selectionBounds = editor.getSelectionPageBounds()
       
       if (!selectionBounds) {
-        throw Error('Could not determine selection bounds.')
+        throw Error('선택 영역을 계산할 수 없었어요.')
       }
       
       const { maxX, maxY } = selectionBounds
@@ -117,7 +108,7 @@ export async function improveDrawing(editor: Editor) {
       
       return newShapeId
     } else {
-      throw Error('No image was generated')
+      throw Error('이미지가 생성되지 않았어요.')
     }
   } catch (e) {
     console.error('Error in improveDrawing:', e)

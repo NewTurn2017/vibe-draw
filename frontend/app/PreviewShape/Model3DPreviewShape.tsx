@@ -113,7 +113,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
     }, [activeTab, setActiveTab, addObjectWithGltf, shape.id]);
 
     // Prepare the HTML with the Three.js code embedded
-    const htmlToUse = shape.props.isGltf && shape.props.gltfUrl 
+    const htmlToUse = shape.props.isGltf && shape.props.gltfUrl
       ? `<!DOCTYPE html>
 <html>
 <head>
@@ -453,7 +453,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
               >
                 <DefaultSpinner />
                 <div className="mt-[10px] text-sm">
-                  {isRegenerating ? 'Regenerating 3D model...' : 'Editing 3D model...'}
+                  {isRegenerating ? '3D 모델 재생성 중…' : '3D 모델 편집 중…'}
                 </div>
               </div>
             )}
@@ -486,7 +486,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
                 navigator.clipboard.writeText(shape.props.threeJsCode)
                 toast.addToast({
                   icon: 'duplicate',
-                  title: 'Model code copied to clipboard',
+                  title: '모델 코드를 클립보드에 복사했어요',
                 })
               }
             }}
@@ -495,7 +495,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
                 navigator.clipboard.writeText(shape.props.threeJsCode)
                 toast.addToast({
                   icon: 'duplicate',
-                  title: 'Model code copied to clipboard',
+                  title: '모델 코드를 클립보드에 복사했어요',
                 })
               }
             }}
@@ -534,7 +534,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
                     if (!result) {
                       toast.addToast({
                         icon: 'warning-triangle',
-                        title: 'Failed to add 3D model.',
+                        title: '3D 모델을 추가하지 못했어요.',
                       });
                     }
                   }, 100); // Short delay to ensure tab context is ready
@@ -544,7 +544,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
                   if (!result) {
                     toast.addToast({
                       icon: 'warning-triangle',
-                      title: 'Failed to add 3D model.',
+                      title: '3D 모델을 추가하지 못했어요.',
                     });
                   }
                 }
@@ -566,7 +566,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
                     if (!result) {
                       toast.addToast({
                         icon: 'warning-triangle',
-                        title: 'Failed to add object.',
+                        title: '객체를 추가하지 못했어요.',
                       });
                     }
                   }, 100); // Short delay to ensure tab context is ready
@@ -576,7 +576,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
                   if (!result) {
                     toast.addToast({
                       icon: 'warning-triangle',
-                      title: 'Failed to add object.',
+                      title: '객체를 추가하지 못했어요.',
                     });
                   }
                 }
@@ -593,7 +593,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
                     if (!result) {
                       toast.addToast({
                         icon: 'warning-triangle',
-                        title: 'Failed to add 3D model.',
+                        title: '3D 모델을 추가하지 못했어요.',
                       });
                     }
                   }, 100); // Short delay to ensure tab context is ready
@@ -603,7 +603,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
                   if (!result) {
                     toast.addToast({
                       icon: 'warning-triangle',
-                      title: 'Failed to add 3D model.',
+                      title: '3D 모델을 추가하지 못했어요.',
                     });
                   }
                 }
@@ -625,7 +625,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
                     if (!result) {
                       toast.addToast({
                         icon: 'warning-triangle',
-                        title: 'Failed to add object.',
+                        title: '객체를 추가하지 못했어요.',
                       });
                     }
                   }, 100); // Short delay to ensure tab context is ready
@@ -635,7 +635,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
                   if (!result) {
                     toast.addToast({
                       icon: 'warning-triangle',
-                      title: 'Failed to add object.',
+                      title: '객체를 추가하지 못했어요.',
                     });
                   }
                 }
@@ -658,7 +658,7 @@ export class Model3DPreviewShapeUtil extends BaseBoxShapeUtil<Model3DPreviewShap
                 borderColor: 'var(--color-muted-1)',
               }}
             >
-              {isEditing ? 'Click the canvas to exit' : 'Double click to interact with 3D model'}
+              {isEditing ? '캔버스를 클릭해서 빠져나가기' : '더블 클릭으로 3D 모델 조작'}
             </span>
           </div>
         )}
