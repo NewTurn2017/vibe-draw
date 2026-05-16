@@ -1,0 +1,19 @@
+# Dummy worker image — exercises RunPod plumbing + R2 upload without the
+# heavy TRELLIS CUDA dependencies. Builds in ~3 minutes on linux/amd64.
+
+FROM python:3.11-slim
+
+WORKDIR /workspace
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates curl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir runpod boto3 requests
+
+# Tiny Khronos sample .glb (~3 KB) used as the fake TRELLIS output.
+ADD https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/Box/glTF-Binary/Box.glb /workspace/sample.glb
+
+COPY handler_dummy.py /workspace/handler.py
+
+CMD ["python", "-u", "/workspace/handler.py"]
