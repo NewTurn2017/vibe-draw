@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* vibe-draw design tokens — Notion · Soft Modern */
+  --vd-background:    36 30% 96%;   /* #f7f5f1 warm light */
+  --vd-surface:       0 0% 100%;    /* #ffffff */
+  --vd-border:        36 20% 89%;   /* #e8e4dc */
+  --vd-muted:         36 22% 91%;   /* #ede9e1 */
+  --vd-foreground:    36 6% 16%;    /* #2b2a26 */
+  --vd-subtle:        36 6% 39%;    /* #6b6760 */
+  --vd-faint:         36 5% 52%;    /* #8c887e */
+  --vd-accent:        16 100% 61%;  /* #ff7038 orange */
+  --vd-accent-light:  18 100% 68%;  /* #ff8a5b */
+  --vd-accent-dark:   16 80% 51%;   /* #e85a20 */
+  --vd-danger:        0 72% 51%;    /* #dc2626 */
+  --vd-success:       142 71% 35%;  /* #16a34a */
+}
+
 * {
 	touch-action: none;
 }
