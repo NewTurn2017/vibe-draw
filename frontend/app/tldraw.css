@@ -2997,3 +2997,20 @@ body > div.editor > div:nth-child(1) > div > div.tlui-layout > div.tlui-layout__
 body > div.editor > div:nth-child(1) > div > div.tlui-layout > div.tlui-layout__bottom > div.tlui-layout__bottom__main > div.tlui-navigation-zone {
 	display: none !important;
 }
+
+/* === vibe-draw tone overrides for Tldraw chrome === */
+
+/* Toast 톤 정렬 — 흰 surface + 우리 border */
+.tlui-toast__container {
+  background: hsl(var(--vd-surface)) !important;
+  border: 1px solid hsl(var(--vd-border)) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06) !important;
+  color: hsl(var(--vd-foreground)) !important;
+}
+
+/* 좌측 toolbar / 우측 style panel 컨테이너의 그림자만 살짝 가볍게 */
+.tlui-toolbar__inner,
+.tlui-style-panel {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06) !important;
+}
