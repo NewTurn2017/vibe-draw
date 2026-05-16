@@ -3,7 +3,6 @@ import {
 	BaseBoxShapeUtil,
 	DefaultSpinner,
 	HTMLContainer,
-	Icon,
 	SvgExportContext,
 	TLBaseShape,
 	Vec,
@@ -13,6 +12,16 @@ import {
 	useToasts,
 	useValue,
 } from '@tldraw/tldraw'
+
+const ICON_GLYPH: Record<string, string> = { duplicate: '⧉', redo: '↻', plus: '＋' }
+const Icon = ({ icon, ...rest }: { icon: string; [k: string]: any }) => (
+	<span
+		{...rest}
+		className="cursor-pointer select-none text-lg leading-none"
+	>
+		{ICON_GLYPH[icon] ?? '•'}
+	</span>
+)
 
 export type PreviewShape = TLBaseShape<
 	'response',
@@ -88,30 +97,19 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 					/>
 				) : (
 					<div
+						className="flex h-full w-full items-center justify-center border"
 						style={{
-							width: '100%',
-							height: '100%',
 							backgroundColor: 'var(--color-muted-2)',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							border: '1px solid var(--color-muted-1)',
+							borderColor: 'var(--color-muted-1)',
 						}}
 					>
 						<DefaultSpinner />
 					</div>
 				)}
 				<div
+					className="absolute top-0 flex h-10 w-10 cursor-pointer items-center justify-center"
 					style={{
-						position: 'absolute',
-						top: 0,
 						right: -40,
-						height: 40,
-						width: 40,
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						cursor: 'pointer',
 						pointerEvents: 'all',
 					}}
 					onClick={() => {
@@ -129,27 +127,16 @@ export class PreviewShapeUtil extends BaseBoxShapeUtil<PreviewShape> {
 				</div>
 				{htmlToUse && (
 					<div
+						className="absolute left-0 flex w-full items-center justify-center p-1 text-center text-xs pointer-events-none font-[inherit]"
 						style={{
-							textAlign: 'center',
-							position: 'absolute',
 							bottom: isEditing ? -40 : 0,
-							padding: 4,
-							fontFamily: 'inherit',
-							fontSize: 12,
-							left: 0,
-							width: '100%',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							pointerEvents: 'none',
 						}}
 					>
 						<span
+							className="rounded-full border px-3 py-1"
 							style={{
 								background: 'var(--color-panel)',
-								padding: '4px 12px',
-								borderRadius: 99,
-								border: '1px solid var(--color-muted-1)',
+								borderColor: 'var(--color-muted-1)',
 							}}
 						>
 							{isEditing ? 'Click the canvas to exit' : 'Double click to interact'}
