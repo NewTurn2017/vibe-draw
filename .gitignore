@@ -1,3 +1,10 @@
 .next/
 node_modules/
 .superpowers/
+
+# Secrets — never commit. Only .env.example is tracked.
+.env
+.env.local
+.env.*.local
+**/.env
+!**/.env.example
