@@ -238,7 +238,7 @@ export function AutoDrawButton() {
             Auto 3D {enabled ? '(ON)' : '(OFF)'}
           </Button>
         </TooltipTrigger>
-        <TooltipContent>Generate a drawing from a text prompt</TooltipContent>
+        <TooltipContent>Auto-generate a 3D model after a pause in drawing</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   )
