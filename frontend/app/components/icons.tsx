@@ -1,16 +1,19 @@
-import { type SVGProps } from 'react'
+'use client'
+
+import { useId, type SVGProps } from 'react'
 
 /** 3D cube — thinking mode일 때 보라/시안 그라데이션 stroke */
 export function CubeIcon({ gradient = false, ...props }: SVGProps<SVGSVGElement> & { gradient?: boolean }) {
+  const gradientId = `vd-cube-gradient-${useId().replace(/:/g, '')}`
   return (
     <svg
-      width="16" height="16" viewBox="0 0 24 24" fill="none"
-      stroke={gradient ? 'url(#vd-cube-gradient)' : 'currentColor'}
+      viewBox="0 0 24 24" fill="none"
+      stroke={gradient ? `url(#${gradientId})` : 'currentColor'}
       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
       {...props}
     >
       <defs>
-        <linearGradient id="vd-cube-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#ff80ff" />
           <stop offset="100%" stopColor="#80ffff" />
         </linearGradient>
@@ -24,15 +27,16 @@ export function CubeIcon({ gradient = false, ...props }: SVGProps<SVGSVGElement>
 
 /** Brain — thinking mode 그라데이션 표시용 */
 export function BrainIcon({ gradient = false, ...props }: SVGProps<SVGSVGElement> & { gradient?: boolean }) {
+  const gradientId = `vd-brain-gradient-${useId().replace(/:/g, '')}`
   return (
     <svg
-      width="14" height="14" viewBox="0 0 24 24" fill="none"
-      stroke={gradient ? 'url(#vd-brain-gradient)' : 'currentColor'}
+      viewBox="0 0 24 24" fill="none"
+      stroke={gradient ? `url(#${gradientId})` : 'currentColor'}
       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
       {...props}
     >
       <defs>
-        <linearGradient id="vd-brain-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#ff80ff" />
           <stop offset="100%" stopColor="#80ffff" />
         </linearGradient>

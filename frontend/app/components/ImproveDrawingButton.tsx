@@ -4,7 +4,7 @@ import { useEditor, useToasts } from '@tldraw/tldraw'
 import { useCallback, useState } from 'react'
 import { Sparkles, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { improveDrawing } from '../lib/improveDrawing'
 
 export function ImproveDrawingButton() {
@@ -55,26 +55,24 @@ export function ImproveDrawingButton() {
   }, [editor, addToast, isProcessing])
 
   return (
-    <TooltipProvider delayDuration={300}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="default"
-            size="default"
-            onClick={handleClick}
-            disabled={isProcessing}
-            aria-label="Improve drawing"
-          >
-            {isProcessing ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Sparkles className="h-4 w-4 text-accent" />
-            )}
-            {isProcessing ? 'Improving…' : 'Improve'}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Refine selection into a clean illustration</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="default"
+          size="default"
+          onClick={handleClick}
+          disabled={isProcessing}
+          aria-label="Improve drawing"
+        >
+          {isProcessing ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Sparkles className="h-4 w-4 text-accent" />
+          )}
+          {isProcessing ? 'Improving…' : 'Improve'}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Refine selection into a clean illustration</TooltipContent>
+    </Tooltip>
   )
 }

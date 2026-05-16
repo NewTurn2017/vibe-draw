@@ -5,7 +5,7 @@ import { useEditor, useToasts, TLShapeId } from '@tldraw/tldraw'
 import { vibe3DCode } from '../lib/vibe3DCode'
 import { Wand2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export function AutoDrawButton() {
   const editor = useEditor()
@@ -221,25 +221,23 @@ export function AutoDrawButton() {
   }, [enabled, editor, addToast])
 
   return (
-    <TooltipProvider delayDuration={300}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={enabled ? 'default' : 'outline'}
-            size="default"
-            onClick={handleClick}
-            aria-label="Auto draw"
-          >
-            {enabled ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Wand2 className="h-4 w-4 text-accent" />
-            )}
-            Auto 3D {enabled ? '(ON)' : '(OFF)'}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Auto-generate a 3D model after a pause in drawing</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant={enabled ? 'default' : 'outline'}
+          size="default"
+          onClick={handleClick}
+          aria-label="Auto draw"
+        >
+          {enabled ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Wand2 className="h-4 w-4 text-accent" />
+          )}
+          Auto 3D {enabled ? '(ON)' : '(OFF)'}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Auto-generate a 3D model after a pause in drawing</TooltipContent>
+    </Tooltip>
   )
 }

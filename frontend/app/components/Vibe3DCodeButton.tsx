@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Toggle } from '@/components/ui/toggle'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { CubeIcon, BrainIcon } from './icons'
 import { vibe3DCode } from '../lib/vibe3DCode'
 import { edit3DCode } from '../lib/edit3DCode'
@@ -90,49 +90,47 @@ export function Vibe3DCodeButton() {
       : 'Make 3D'
 
   return (
-    <TooltipProvider delayDuration={300}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="inline-flex items-center gap-1.5">
-            <Button
-              variant="default"
-              size="default"
-              onClick={handleClick}
-              disabled={isProcessing}
-              aria-label={label}
-            >
-              {isProcessing ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <CubeIcon
-                  gradient={thinkingEnabled && !is3DModelSelected}
-                  className="h-4 w-4"
-                />
-              )}
-              {label}
-            </Button>
-            {!is3DModelSelected && !isProcessing && (
-              <Toggle
-                variant="outline"
-                size="sm"
-                pressed={thinkingEnabled}
-                onPressedChange={setThinkingEnabled}
-                aria-label="Toggle thinking mode (TRELLIS image-to-3D)"
-                className="h-9 w-9 px-0"
-              >
-                <BrainIcon gradient={thinkingEnabled} className="h-4 w-4" />
-              </Toggle>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="inline-flex items-center gap-1.5">
+          <Button
+            variant="default"
+            size="default"
+            onClick={handleClick}
+            disabled={isProcessing}
+            aria-label={label}
+          >
+            {isProcessing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <CubeIcon
+                gradient={thinkingEnabled && !is3DModelSelected}
+                className="h-4 w-4"
+              />
             )}
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>
-          {is3DModelSelected
-            ? 'Edit the selected 3D model'
-            : thinkingEnabled
-              ? 'Generate a 3D mesh from your sketch (TRELLIS)'
-              : 'Generate Three.js code from your sketch (Gemini)'}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+            {label}
+          </Button>
+          {!is3DModelSelected && !isProcessing && (
+            <Toggle
+              variant="outline"
+              size="sm"
+              pressed={thinkingEnabled}
+              onPressedChange={setThinkingEnabled}
+              aria-label="Toggle thinking mode (TRELLIS image-to-3D)"
+              className="h-9 w-9 px-0"
+            >
+              <BrainIcon gradient={thinkingEnabled} className="h-4 w-4" />
+            </Toggle>
+          )}
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>
+        {is3DModelSelected
+          ? 'Edit the selected 3D model'
+          : thinkingEnabled
+            ? 'Generate a 3D mesh from your sketch (TRELLIS)'
+            : 'Generate Three.js code from your sketch (Gemini)'}
+      </TooltipContent>
+    </Tooltip>
   )
 }

@@ -9,6 +9,7 @@ import { PreviewShapeUtil } from './PreviewShape/PreviewShape'
 import { Model3DPreviewShapeUtil } from './PreviewShape/Model3DPreviewShape'
 import { TabGroup } from './components/TabGroup'
 import { TldrawLogo } from './components/TldrawLogo'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { useTabStore } from './store/appStore'
 import TestAddCodeButton from './components/TestAddCodeButton'
 
@@ -35,11 +36,13 @@ export default function App() {
             persistenceKey="vibe-3d-code"
             components={{
               SharePanel: () => (
-                <div className="flex items-center gap-2 p-3">
-                  <ImproveDrawingButton />
-                  <AutoDrawButton />
-                  <Vibe3DCodeButton />
-                </div>
+                <TooltipProvider delayDuration={300}>
+                  <div className="flex items-center gap-2 p-3">
+                    <ImproveDrawingButton />
+                    <AutoDrawButton />
+                    <Vibe3DCodeButton />
+                  </div>
+                </TooltipProvider>
               ),
             }}
             shapeUtils={shapeUtils}
